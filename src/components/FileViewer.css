@@ -1,0 +1,18 @@
+.file-viewer {
+  margin-left: 200px;
+  height: 100vh;
+  padding: 2rem;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.file-viewer pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+}
+
+.file-viewer .placeholder,
+.file-viewer .error {
+  color: #888;
+}
