@@ -2,9 +2,10 @@
 
 Run instructions
 
-`
-git fork https://github.com/gxddi/Inbrain`
+`git fork https://github.com/gxddi/Inbrain`
+
 `npm i`
+
 `npm run tauri dev`
 
 
