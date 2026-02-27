@@ -1,12 +1,5 @@
-.sidebar-button {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  cursor: pointer;
-}
-
 .sidebar {
-  position: fixed;
+  position: static;
   top: 0;
   left: 0;
   height: 100vh;
@@ -14,12 +7,20 @@
   background-color: #1e1e1e;
   display: flex;
   flex-direction: column;
-  padding: 0.5rem;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
-.sidebar .sidebar-button {
-  position: static;
-  align-self: flex-end;
+.sidebar-button {
+  position: relative;
+  margin: 3px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.sidebar-toolbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

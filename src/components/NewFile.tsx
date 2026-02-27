@@ -22,16 +22,18 @@ function NewFile() {
         New File
       </button>
       {showForm && (
-        <form onSubmit={(e) => { e.preventDefault(); handleCreate(); }}>
-          <input
-            type="text"
-            placeholder="Enter file name"
-            value={fileName}
-            onChange={(e) => setFileName(e.target.value)}
-          />
-          <button type="submit">Create</button>
-          <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
-        </form>
+        <div className="modal-overlay">
+          <form className="modal" onSubmit={(e) => { e.preventDefault(); handleCreate(); }}>
+            <input
+              type="text"
+              placeholder="Enter file name"
+              value={fileName}
+              onChange={(e) => setFileName(e.target.value)}
+            />
+            <button type="submit">Create</button>
+            <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
+          </form>
+        </div>
       )}
     </>
   );

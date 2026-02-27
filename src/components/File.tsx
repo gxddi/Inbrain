@@ -46,7 +46,7 @@ function File({ node, depth }: FileProps) {
             <FileText/>
           </>
         )}
-        <span>{node.name}</span>
+        <p>{node.name}</p>
 
       </div>
 

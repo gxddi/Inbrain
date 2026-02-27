@@ -8,10 +8,12 @@ function FileTree() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    invoke<FileNode>("get_file_tree")
-      .then(setTree) // Pass result of get_file_tree to setTree
-      .catch((e) => setError(e));
-  }, []);
+    if (tree === null) {
+      invoke<FileNode>("get_root_node")
+        .then(setTree)
+        .catch((e) => setError(e));
+    }
+  }, [tree]);
 
   if (error) return <p>{error}</p>;
   if (!tree) return <p>Loading...</p>;

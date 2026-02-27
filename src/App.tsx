@@ -5,12 +5,14 @@ import { FileProvider } from "./components/FileContext";
 
 function App() {
   return (
-    <FileProvider>
-      <main className="container">
+    <div className="container">
+      <div className="side">
         <Sidebar />
-        <FileViewer />
-      </main>
-    </FileProvider>
+      </div>
+      <div className="main">
+        <FileViewer/>
+      </div>
+    </div>
   );
 }
 

@@ -11,8 +11,10 @@ function Sidebar() {
     <>
       {isOpen ? (
         <aside className="sidebar">
-          <Menu className="sidebar-button" onClick={() => setIsOpen(false)} />
-          <NewFile />
+          <div className="sidebar-toolbar">
+            <Menu className="sidebar-button" onClick={() => setIsOpen(false)} />
+            <NewFile />
+          </div>
           <FileTree />
         </aside>
       ) : (
