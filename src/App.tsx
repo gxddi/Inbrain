@@ -1,18 +1,20 @@
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import FileViewer from "./components/FileViewer";
-import { FileProvider } from "./components/FileContext";
+import { ActiveFileContextProvider } from "./components/ActiveFileContext";
 
 function App() {
   return (
-    <div className="container">
-      <div className="side">
-        <Sidebar />
-      </div>
-      <div className="main">
-        <FileViewer/>
-      </div>
-    </div>
+    <ActiveFileContextProvider>
+      <main className="container">
+        <div className="side">
+          <Sidebar />
+        </div>
+        <div className="viewer">
+          <FileViewer/>
+        </div>
+      </main>
+    </ActiveFileContextProvider>  
   );
 }
 

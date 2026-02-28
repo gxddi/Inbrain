@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { ChevronRight, ChevronDown, Folder, FileText } from "lucide-react";
-import { useFileContext } from "./FileContext";
+import { useActiveFileContext } from "./ActiveFileContext";
 
 export type FileNode = {
   name: string;
   path: string;
+  parent: FileNode | null;
   is_folder: boolean;
   children: FileNode[] | null; // Accept other files as children or none
 };
@@ -16,15 +17,16 @@ type FileProps = {
 
 function File({ node, depth }: FileProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { openFile } = useFileContext();
+  const activeFileContext = useActiveFileContext();
 
   const indent = depth * 16;
 
   function handleClick() {
     if (node.is_folder) {
       setIsExpanded(!isExpanded);
+      activeFileContext?.setActiveFolder(node);
     } else {
-      openFile(node.path);
+      activeFileContext?.setActiveFile(node);
     }
   }
 

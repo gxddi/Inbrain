@@ -4,10 +4,11 @@ use std::path::PathBuf;
 const NOTEBOOK_NAME: &str = "Infinium";
 
 // Gives javascript way to read rust struct as json
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct FileNode {
     name: String,
     path: String,
+    parent: Option<Box<FileNode>>,
     is_folder: bool,
     children: Option<Vec<FileNode>>,
 }
@@ -37,6 +38,7 @@ impl FileNode {
         Self {
             name: String::from("root"),
             path: root.to_string_lossy().to_string(),
+            parent: None,
             is_folder: true,
             children: Some(children),
         }
@@ -58,6 +60,22 @@ impl FileNode {
             .to_string_lossy()
             .to_string();
 
+        let parent = path
+            .parent()
+            .and_then(|p| {
+                let rel = p.strip_prefix(&root).ok()?;
+                Some(Box::new(FileNode {
+                    name: p
+                        .file_name()
+                        .map(|n| n.to_string_lossy().to_string())
+                        .unwrap_or_else(|| NOTEBOOK_NAME.to_string()),
+                    path: rel.to_string_lossy().to_string(),
+                    parent: None,
+                    is_folder: true,
+                    children: None,
+                }))
+            });
+
         if path.is_dir() {
             let children = fs::read_dir(path)
                 .map(|entries| {
@@ -73,6 +91,7 @@ impl FileNode {
             FileNode {
                 name,
                 path: relative_path,
+                parent,
                 is_folder: true,
                 children: Some(children),
             }
@@ -80,20 +99,21 @@ impl FileNode {
             FileNode {
                 name,
                 path: relative_path,
+                parent,
                 is_folder: false,
                 children: None,
             }
         }
     }
 
-    fn touch_file(file_name: String) -> Result<(), String> {
-        let path = get_notebook_dir()?.join(format!("{}.md", file_name));
+    fn touch_file(&self) -> Result<(), String> {
+        let path = get_notebook_dir()?.join(&self.path);
 
         fs::write(path, "").map_err(|e| e.to_string())
     }
 
-    fn read_file(file_name: String) -> Result<String, String> {
-        let path = get_notebook_dir()?.join(&file_name);
+    fn read_file(&self) -> Result<String, String> {
+        let path = get_notebook_dir()?.join(&self.path);
 
         fs::read_to_string(path).map_err(|e| e.to_string())
     }
@@ -111,11 +131,24 @@ pub fn get_root_node() -> Result<FileNode, String> {
 }
 
 #[tauri::command]
-pub fn read_file(file_name: String) -> Result<String, String> {
-    FileNode::read_file(file_name)
+pub fn read_file(node: FileNode) -> Result<String, String> {
+    node.read_file()
 }
 
 #[tauri::command]
-pub fn create_file(file_name: String) -> Result<(), String> {
-    FileNode::touch_file(file_name)
+pub fn create_file(file_name: String, folder_path: String) -> Result<(), String> {
+    let rel_path = if folder_path.is_empty() {
+        PathBuf::from(format!("{}.md", file_name))
+    } else {
+        PathBuf::from(&folder_path).join(format!("{}.md", file_name))
+    };
+
+    let node = FileNode {
+        name: file_name,
+        path: rel_path.to_string_lossy().to_string(),
+        parent: None,
+        is_folder: false,
+        children: None,
+    };
+    node.touch_file()
 }

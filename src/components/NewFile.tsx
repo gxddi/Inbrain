@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { useActiveFileContext } from "./ActiveFileContext";
 
 function NewFile() {
   const [showForm, setShowForm] = useState(false);
   const [fileName, setFileName] = useState("");
+  const { activeFolder, refreshTree } = useActiveFileContext()!;
 
   async function handleCreate() {
     try {
-      await invoke("create_file", { fileName });
+      await invoke("create_file", { fileName, folderPath: activeFolder?.path ?? "" });
+      refreshTree();
     } catch (e) {
       console.log(e);
     }
